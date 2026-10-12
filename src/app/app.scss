@@ -1,0 +1,73 @@
+.shell-container {
+  font-family: system-ui, -apple-system, sans-serif;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+  color: #1e293b;
+}
+
+.header {
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #64748b;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  small {
+    color: #94a3b8;
+  }
+
+  .badge {
+    align-self: flex-start;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  &.active .badge {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &.beta .badge {
+    background: #e0e7ff;
+    color: #4338ca;
+  }
+
+  &.maintenance .badge {
+    background: #fef3c7;
+    color: #b45309;
+  }
+}
