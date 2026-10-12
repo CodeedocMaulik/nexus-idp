@@ -1,0 +1,163 @@
+<div class="overview-page">
+  <!-- 1. Executive Welcome & Quick Action Bar -->
+  <section class="page-header">
+    <div class="header-titles">
+      <h1>Platform Overview</h1>
+      <p>Self-service cloud infrastructure health & ephemeral test fleet</p>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        <span>Export Audit Report</span>
+      </button>
+
+      <button class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        <span>+ Spin Up Ephemeral Env</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 2. KPI Metrics Grid -->
+  <section class="kpi-grid">
+    @for (kpi of kpis(); track kpi.id) {
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">{{ kpi.label }}</span>
+          <span class="kpi-badge" [class.positive]="kpi.isPositive">
+            {{ kpi.change }}
+          </span>
+        </div>
+        <div class="kpi-value">{{ kpi.value }}</div>
+      </div>
+    }
+  </section>
+
+  <!-- 3. Active Ephemeral Environments Fleet -->
+  <section class="panel">
+    <div class="panel-header">
+      <div class="panel-title-group">
+        <h2>Active Ephemeral Environments</h2>
+        <span class="burn-pill">Current Burn: ${{ totalHourlyBurn() }}/hr</span>
+      </div>
+
+      <div class="filter-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          placeholder="Filter by name, service, branch..."
+          [value]="searchQuery()"
+          (input)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Table of Environments -->
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Environment / Service</th>
+            <th>Cluster</th>
+            <th>Git Branch</th>
+            <th>Status</th>
+            <th>TTL Left</th>
+            <th>Cost/hr</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (env of filteredEnvironments(); track env.id) {
+            <tr>
+              <td>
+                <div class="env-cell">
+                  <span class="env-name">{{ env.name }}</span>
+                  <span class="service-tag">{{ env.service }}</span>
+                </div>
+              </td>
+              <td><span class="cluster-tag">{{ env.cluster }}</span></td>
+              <td>
+                <span class="branch-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/>
+                    <circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+                  </svg>
+                  {{ env.branch }}
+                </span>
+              </td>
+              <td>
+                <span class="status-pill" [class]="env.status.toLowerCase()">
+                  <span class="dot"></span>
+                  {{ env.status }}
+                </span>
+              </td>
+              <td>
+                <span class="ttl-text" [class.urgent]="env.ttlHours < 2">
+                  {{ env.ttlHours }}h
+                </span>
+              </td>
+              <td>${{ env.costPerHour.toFixed(2) }}</td>
+              <td class="text-right">
+                <div class="action-btn-group">
+                  <button class="action-btn" (click)="extendTTL(env.id)" title="Extend TTL by 24h">
+                    ⏳ +24h
+                  </button>
+                  <button class="action-btn danger" (click)="destroyEnvironment(env.id)" title="Tear down environment">
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-state">
+                No matching environments found for "{{ searchQuery() }}"
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. Deferrable View: High-Volume Cluster Telemetry -->
+  <!-- Demonstrates @defer (on viewport) -->
+  <section class="telemetry-section">
+    @defer (on viewport) {
+      <div class="telemetry-card">
+        <div class="telemetry-header">
+          <h3>⚡ Live Cluster Telemetry & Resource Utilization</h3>
+          <span class="stream-badge">Streaming (1s tick)</span>
+        </div>
+        <div class="bars-grid">
+          <div class="bar-group">
+            <span class="bar-label">CPU Allocation (124 Cores)</span>
+            <div class="progress-bar"><div class="fill" style="width: 64%"></div></div>
+            <span class="bar-val">64%</span>
+          </div>
+          <div class="bar-group">
+            <span class="bar-label">Memory Allocation (512 GB)</span>
+            <div class="progress-bar"><div class="fill purple" style="width: 78%"></div></div>
+            <span class="bar-val">78%</span>
+          </div>
+          <div class="bar-group">
+            <span class="bar-label">Cloud Pods Running</span>
+            <div class="progress-bar"><div class="fill green" style="width: 42%"></div></div>
+            <span class="bar-val">42% (148 Pods)</span>
+          </div>
+        </div>
+      </div>
+    } @placeholder {
+      <div class="skeleton-card">
+        <span>Scroll down to load live cluster telemetry...</span>
+      </div>
+    }
+  </section>
+</div>
