@@ -1,0 +1,25 @@
+<div class="app-layout">
+  <!-- Dark Backdrop Overlay (when Mobile Drawer is open on tablet/mobile) -->
+  @if (isMobileOpen()) {
+    <div class="backdrop" (click)="closeMobile()"></div>
+  }
+
+  <!-- Sidebar Component -->
+  <app-sidebar
+    [isCollapsed]="isDesktopCollapsed()"
+    [isMobileOpen]="isMobileOpen()"
+    (toggleCollapse)="toggleDesktop()"
+    (closeMobile)="closeMobile()"
+  />
+
+  <!-- Main Viewport Area -->
+  <div class="viewport">
+    <app-header
+      (toggleSidebar)="toggleMobile()"
+    />
+
+    <main class="content-area">
+      <router-outlet />
+    </main>
+  </div>
+</div>

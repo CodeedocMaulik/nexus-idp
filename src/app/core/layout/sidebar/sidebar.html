@@ -1,0 +1,94 @@
+<aside
+  class="sidebar"
+  [class.collapsed]="isCollapsed()"
+  [class.mobile-open]="isMobileOpen()"
+>
+  <!-- Brand Header -->
+  <div class="brand">
+    <img src="/nexus-logo.png" alt="Nexus IDP" class="brand-logo" />
+    @if (!isCollapsed()) {
+      <div class="brand-text">
+        <span class="brand-name">Nexus IDP</span>
+        <span class="brand-tag">Platform Core</span>
+      </div>
+    }
+  </div>
+
+  <!-- Mobile-only Environment Context Banner -->
+  <div class="mobile-env-banner">
+    <span class="status-indicator"></span>
+    <span class="env-name">aws-eu-west-1 (Healthy)</span>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav-list">
+    @for (item of navItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        class="nav-item"
+        (click)="closeMobile.emit()"
+        [title]="isCollapsed() ? item.label : ''"
+      >
+        <span class="icon-wrap">
+          @switch (item.icon) {
+            @case ('overview') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+                <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+              </svg>
+            }
+            @case ('environments') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            }
+            @case ('catalog') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            }
+            @case ('finops') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            }
+            @case ('audit') {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            }
+          }
+        </span>
+
+        @if (!isCollapsed()) {
+          <span class="label">{{ item.label }}</span>
+          @if (item.badge) {
+            <span class="item-badge">{{ item.badge }}</span>
+          }
+        }
+      </a>
+    }
+  </nav>
+
+  <!-- Desktop Rail Collapse Button -->
+  <div class="sidebar-footer">
+    <button class="toggle-btn" (click)="toggleCollapse.emit()" [title]="isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'">
+      <svg
+        class="chevron-icon"
+        [class.rotated]="isCollapsed()"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>
+      </svg>
+      @if (!isCollapsed()) {
+        <span>Collapse sidebar</span>
+      }
+    </button>
+  </div>
+</aside>
